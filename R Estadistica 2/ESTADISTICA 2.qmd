@@ -90,11 +90,10 @@ Las variables aleatorias pueden ser discretas o continuas, dependiendo de los va
 
 En este taller se desarrollan ejercicios orientados a la interpretación de eventos, el uso de funciones de distribución y el cálculo de probabilidades, con el fin de fortalecer la comprensión de estos conceptos y su aplicación en diferentes contextos.
 
-
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 1.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 1.png")
 ```
 
 *Teoría:* Formalización de Sucesos y Operadores Lógicos En estadística, un suceso es un subconjunto de resultados posibles de una Variable Aleatoria $X$. Para definirlos correctamente, utilizamos la notación de intervalos:
@@ -179,7 +178,7 @@ ggplot() +
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 2.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 2.png")
 ```
 
 Probabilidades y Función de Distribución ($F(x)$)
@@ -293,7 +292,7 @@ ggplot(df_plot, aes(x, y)) +
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 3.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 3.png")
 ```
 
 Aquí construimos la Función de Probabilidad $p(x)$ y la Función de Distribución
@@ -367,7 +366,7 @@ cat("Resultados de Distribución de Accidentes:", "\n",
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ejemplo 4.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ejemplo 4.png")
 ```
 
 Se nos da directamente la tabla de la función de distribución
@@ -404,7 +403,7 @@ res_4 %>% kable(caption="Resultados Ejercicio 4: Defectos") %>% kable_classic(fu
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 5.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 5.png")
 ```
 
 Este ejercicio analiza la variable aleatoria $X$ (suma de los puntos de dos dados). Al lanzar dos dados, hay $6 \times 6 = 36$ resultados posibles.
@@ -470,7 +469,7 @@ res_ej5 %>% kable(caption = "Estadísticos: Suma de dos Dados") %>% kable_classi
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 6.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 6.png")
 ```
 
 En este ejercicio, la variable de interés no es el premio directamente, sino la **Ganancia Neta (**$G$). Esta se define como la diferencia entre lo que el cliente recibe (el premio) y lo que el cliente paga (el costo de la botella).
@@ -570,7 +569,7 @@ cat("Esperanza E[G]:", esperanza, "\n",
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 7.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 7.png")
 ```
 
 En el ejercicio 7, se presenta una **Función de Densidad** gráfica (un triángulo). En variables continuas, la probabilidad es el **área bajo la curva**.
@@ -627,7 +626,7 @@ cat("--- ESTADÍSTICOS: VARIABLE CONTINUA (TRIANGULAR) ---", "\n",
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 8.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 8.png")
 ```
 
 En este ejercicio, la función de densidad $f(x)$ tiene un valor constante de $1/3$ en dos intervalos separados.
@@ -675,7 +674,7 @@ cat("--- ESTADÍSTICOS: VARIABLE CONTINUA POR TRAMOS ---", "\n",
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 9.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 9.png")
 ```
 
 ## Esperanza y Percentiles
@@ -738,7 +737,7 @@ cat("--- RESULTADOS FINALES EJERCICIO 9 ---", "\n",
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 10.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 10.png")
 ```
 
 ## Distribución Uniforme (Contenido de Café)
@@ -814,11 +813,10 @@ cat("P[X <= 228.65]:", p1, "\n")
 cat("P[229.34 <= X <= 231.66]:", p2, "\n")
 ```
 
-
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 11.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 11.png")
 ```
 
 ## Longitud de Piezas (Cálculo de la constante $k$)
@@ -1024,11 +1022,10 @@ ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
   theme_minimal()
 ```
 
-
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 14.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 14.png")
 ```
 
 ## Duración de Alimento Perecedero
@@ -1047,7 +1044,7 @@ p_14b <- integrate(f14, 500, Inf)$value # Al menos 500h
 mediana_14 <- sqrt(180000) - 100
 ```
 
-## GRAFICA 
+## GRAFICA
 
 ```{r}
 f_x_14 <- function(x) {
@@ -1161,7 +1158,7 @@ cat("Probabilidad:", round(prob_a, 4), "\n",
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 16.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 16.png")
 ```
 
 ## Radiación Solar en Miami
@@ -1195,7 +1192,7 @@ res_final %>% kable(caption = "Resultados: Supervivencia y Fenómenos Naturales"
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 17.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 17.png")
 ```
 
 ## pH del Agua en un Lago
@@ -1238,7 +1235,7 @@ p_imp <- c(0.20, 0.25, 0.40, 0.15)
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 19.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 19.png")
 ```
 
 ## Tiempo de Reparación de Computadoras
@@ -1271,7 +1268,7 @@ res_17_19 %>% kable(caption = "Análisis de pH, Impurezas y Servicios") %>% kabl
 # Ejercicio
 
 ```{r}
-knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 20.png")
+knitr::include_graphics("H:/TALLER/Variables Aleatorias/R Estadistica 2/ej 20.png")
 ```
 
 ## Teoría y Fórmulas: Transformaciones y Riesgo
