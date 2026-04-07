@@ -1,0 +1,824 @@
+---
+title: "VARIABLES ALEATORIAS Y DISTRIBUCIONES DE PROBABILIDAD"
+subtitle: "TALLER"
+author:
+  - name: "Julian Barreto <br> Gabriel Molina <br> Erick Jan"
+    affiliation: "Universidad del Tolima"
+    affiliation-url: "https://www.ut.edu.co/"
+date: today
+lang: es
+title-block-banner: "#50faf4"
+
+format:
+  html:
+    page-layout: full
+    fontsize: 14pt
+    toc: true
+    toc-location: right
+    number-sections: true
+    code-fold: true
+    code-summary: "Ver código"
+    theme: dark
+    highlight-style: monokai
+    html-math-method: katex
+    smooth-scroll: true
+    link-external-newwindow: true
+    code-overflow: scroll
+    favicon: favicon.ico
+    
+editor: visual
+
+knitr:
+  opts_chunk:
+    message: false
+    warning: false
+    fig.align: center
+    fig.width: 6
+    fig.height: 6
+    out.width: "70%"
+---
+
+```{r setup}
+options(
+  knitr.table.format = "html",
+  scipen = 999
+)
+```
+
+```{=html}
+<div style="position:absolute; top:10px; right:10px;">
+<img src="Logo_ut.png" width="150">
+</div>
+```
+
+```{=html}
+<style>
+body{
+  background-color:#f7f6ed;
+  font-size:130%;
+  text-align:justify;
+}
+</style>
+```
+
+```{r}
+#| echo: false
+#| results: 'asis'
+
+cat("# Activar Paquetes {.unnumbered}\n")
+```
+
+```{r}
+library(tidyverse) 
+library(kableExtra) 
+library(agricolae) 
+library(RColorBrewer) 
+library(ggplot2) 
+library(knitr)
+```
+
+```{r}
+#| echo: false
+#| results: 'asis'
+
+cat("# Introducción {.unnumbered}\n")
+```
+
+Las variables aleatorias y las distribuciones de probabilidad constituyen pilares esenciales en la estadística, debido a que facilitan la representación y el estudio de situaciones donde existe incertidumbre. Gracias a estas herramientas, se puede analizar cómo se comportan los datos y determinar la probabilidad de que ocurran ciertos eventos.
+
+Dependiendo de los valores que puedan asumir, las variables aleatorias se clasifican en discretas o continuas, y cada tipo se examina mediante funciones que describen su comportamiento probabilístico. Estas funciones permiten entender la manera en que se distribuyen los posibles resultados y apoyan la toma de decisiones cuando no se tiene certeza absoluta.
+
+En este taller se proponen ejercicios enfocados en la interpretación de sucesos, el manejo de funciones de distribución y el cálculo de probabilidades, con el propósito de afianzar el entendimiento de estos conceptos y su aplicación en diversos escenarios.
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 3.png")
+```
+
+Aquí construimos la Función de Probabilidad $p(x)$ y la Función de Distribución
+
+$F(x)$.Fórmulas:$F(x) = \sum_{i=0}^{x} p(i)$$P(V \geq 2) = p(2) + p(3)$ o también $1 - F(1)$
+
+```{r}
+v_val <- 0:3
+p_v <- c(0.4, 0.3, 0.2, 0.1)
+f_v <- cumsum(p_v) # F(x) = suma acumulada
+```
+
+## Tabla
+
+```{r}
+tabla_3 <- data.frame(Accidentes=v_val, p_v=p_v, F_v=f_v)
+tabla_3 %>% kable(caption="Distribución de Accidentes (V)") %>% kable_classic(full_width = F)
+```
+
+## Gráfica
+
+```{r}
+ggplot(tabla_3, aes(x=Accidentes, y=F_v)) +
+  geom_step(direction="hv", size=1, color="darkblue") +
+  geom_point(size=3, color="red") +
+  labs(title="Función de Distribución F(v)", x="N° Accidentes", y="Prob. Acumulada") +
+  theme_minimal()
+```
+
+## Definición de la tabla de distribución de accidentes (V)
+
+```{r}
+accidentes <- c(0, 1, 2, 3)
+p_v        <- c(0.4, 0.3, 0.2, 0.1)
+```
+
+## Esperanza Matemática (E\[V\])
+
+```{r}
+esperanza <- sum(accidentes * p_v)
+```
+
+## Varianza (Var(V))
+
+```{r}
+varianza  <- sum((accidentes - esperanza)^2 * p_v)
+```
+
+## Desviación Estándar (sigma)
+
+```{r}
+desviacion <- sqrt(varianza)
+```
+
+## Coeficiente de Variación (CV) con %
+
+```{r}
+cv_porcentaje <- (desviacion / esperanza) * 100
+```
+
+## --- Mostrar Resultados ---
+
+```{r}
+cat("Resultados de Distribución de Accidentes:", "\n",
+    "Esperanza (Media):", esperanza, "\n",
+    "Varianza:", varianza, "\n",
+    "Desviación Estándar:", desviacion, "\n",
+    "Coeficiente de Variación:", round(cv_porcentaje, 2), "%")
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ejemplo 4.png")
+```
+
+Se nos da directamente la tabla de la función de distribución
+
+$F(x)$.Fórmulas aplicadas:$P(X=2) = F(2) - F(1)$$P(X \geq 3) = 1 - F(2)$$P(2 \leq X \leq 5) = F(5) - F(1)$
+
+## DEFECTOS
+
+```{r}
+f_defectos <- c(0.06, 0.19, 0.39, 0.67, 0.92, 0.97, 1.00)
+```
+
+## Cálculos
+
+```{r}
+p_x2 <- f_defectos[3] - f_defectos[2]      # P(X=2)
+p_ge3 <- 1 - f_defectos[3]                # P(X>=3) = 1 - F(2)
+p_2_5 <- f_defectos[6] - f_defectos[2]     # P(2<=X<=5) = F(5) - F(1)
+p_2_5_exc <- f_defectos[5] - f_defectos[3] # P(2<X<5) = F(4) - F(2)
+```
+
+## Tabla Resultados
+
+```{r}
+res_4 <- data.frame(
+  Inciso = c("P[X=2]", "P[X \u2265 3]", "P[2 \u2264 X \u2264 5]", "P[2 < X < 5]"),
+  Formula = c("F(2)-F(1)", "1-F(2)", "F(5)-F(1)", "F(4)-F(2)"),
+  Resultado = c(p_x2, p_ge3, p_2_5, p_2_5_exc)
+)
+
+res_4 %>% kable(caption="Resultados Ejercicio 4: Defectos") %>% kable_classic(full_width = F)
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 5.png")
+```
+
+Este ejercicio analiza la variable aleatoria $X$ (suma de los puntos de dos dados). Al lanzar dos dados, hay $6 \times 6 = 36$ resultados posibles.
+
+Fórmulas Aplicadas:
+
+Función de Probabilidad
+
+$p(x)$: Se calcula como $:$$\frac{\text{casos favorables}}{36}$
+
+Esperanza Matemática $E[X]$:$$E[X] = \sum x_i \cdot p(x_i)$$
+
+Varianza $Var(X)$:$$Var(X) = \sum x_i^2 \cdot p(x_i) - (E[X])^2$$
+
+Desviación Típica $\sigma$: $\sigma = \sqrt{Var(X)}$
+
+Probabilidad en Intervalos: $P(a < X < b) = \sum p(x)$ para todos los valores de $x$ estrictamente entre $a$ y $b$
+
+## Definir soporte y probabilidades
+
+```{r}
+sumas <- 2:12
+casos <- c(1, 2, 3, 4, 5, 6, 5, 4, 3, 2, 1)
+prob_p <- casos / 36
+
+df_dados <- data.frame(X = sumas, p_x = prob_p)
+```
+
+## Cálculos Estadísticos
+
+```{r}
+esp_dados <- sum(df_dados$X * df_dados$p_x)
+var_dados <- sum(df_dados$X^2 * df_dados$p_x) - (esp_dados^2)
+sd_dados  <- sqrt(var_dados)
+```
+
+## Probabilidades de intervalos
+
+(d) P\[4 \< X \< 8\] -\> Sumas 5, 6, 7
+
+```{r}
+p_5d <- sum(df_dados$p_x[df_dados$X > 4 & df_dados$X < 8])
+```
+
+(e) P\[4 \<= X \<= 8\] -\> Sumas 4, 5, 6, 7, 8
+
+```{r}
+p_5e <- sum(df_dados$p_x[df_dados$X >= 4 & df_dados$X <= 8])
+```
+
+## Tabla de Resultados
+
+```{r}
+res_ej5 <- data.frame(
+  Medida = c("Esperanza E[X]", "Desviación Típica \u03c3", "P[4 < X < 8]", "P[4 \u2264 X \u2264 8]"),
+  Formula = c("\u2211 x \u00b7 p(x)", "\u221aVar(X)", "p(5)+p(6)+p(7)", "p(4)+...+p(8)"),
+  Valor = c(esp_dados, round(sd_dados, 4), round(p_5d, 4), round(p_5e, 4))
+)
+
+res_ej5 %>% kable(caption = "Estadísticos: Suma de dos Dados") %>% kable_classic(full_width = F)
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 6.png")
+```
+
+En este ejercicio, la variable de interés no es el premio directamente, sino la **Ganancia Neta (**$G$). Esta se define como la diferencia entre lo que el cliente recibe (el premio) y lo que el cliente paga (el costo de la botella).
+
+## **Fórmulas Aplicadas:**
+
+**Definición de la Variable Ganancia (**$G$): $$G = \text{Premio} - \text{Costo}$$ *Donde el costo es fijo: 100 ptas.*
+
+**Función de Probabilidad** $p(g)$: Se calcula mediante la frecuencia relativa de cada premio sobre el total de chapas (1000): $$p(g_i) = \frac{f_i}{N}$$
+
+**Probabilidad de "No Perder Dinero":** Un cliente no pierde dinero si su ganancia es cero o positiva: $$P(G \geq 0) = \sum_{g_i \geq 0} p(g_i)$$
+
+-   **Premios (**$x$): 0, 50, 100, 500, 1000.
+-   **Ganancias (**$g$): \* $0 - 100 = \mathbf{-100}$ (Pérdida)
+    -   $50 - 100 = \mathbf{-50}$ (Pérdida)
+    -   $100 - 100 = \mathbf{0}$ (No pierde)
+    -   $500 - 100 = \mathbf{400}$ (Ganancia)
+    -   $1000 - 100 = \mathbf{900}$ (Ganancia)
+
+**Probabilidad de no perder:** Se suman las probabilidades de los premios $\geq 100$ ptas: $$P(G \geq 0) = \frac{250}{1000} + \frac{40}{1000} + \frac{10}{1000} = \frac{300}{1000} = 0.30$$
+
+## Definir los datos de entrada
+
+```{r}
+premios <- c(0, 50, 100, 500, 1000)
+frecuencias <- c(400, 300, 250, 40, 10)
+costo <- 100
+```
+
+## Calcular Ganancia y Probabilidades
+
+```{r}
+df_6 <- data.frame(
+  Premio = premios,
+  Frecuencia = frecuencias,
+  Ganancia_G = premios - costo,
+  Probabilidad = frecuencias / 1000
+)
+```
+
+## Calcular Probabilidad de no perder (G \>= 0)
+
+```{r}
+prob_no_perder <- sum(df_6$Probabilidad[df_6$Ganancia_G >= 0])
+```
+
+## --- Tabla de Resultados ---
+
+```{r}
+df_6 %>%
+  kable(caption = "Distribución de la Variable Ganancia (G)", align = "c") %>%
+  kable_classic(full_width = F) %>%
+  row_spec(which(df_6$Ganancia_G >= 0), bold = T, background = "#DFF0D8") # Resalta donde no pierde
+```
+
+## --- Gráfico de Barras de la Ganancia ---
+
+```{r}
+ggplot(df_6, aes(x = factor(Ganancia_G), y = Probabilidad, fill = Ganancia_G >= 0)) +
+  geom_col() +
+  scale_fill_manual(values = c("#E74C3C", "#27AE60"), labels = c("Pierde", "No Pierde")) +
+  labs(title = "Distribución de Probabilidad de la Ganancia",
+       subtitle = paste("Probabilidad de no perder dinero:", prob_no_perder),
+       x = "Ganancia neta (ptas)", y = "p(g)", fill = "Estado") +
+  theme_minimal()
+```
+
+## RESULTADOS
+
+```{r}
+# 1. LIMPIEZA
+rm(list = ls()) 
+
+# 2. DATOS DE ENTRADA (Según tu tabla)
+premios    <- c(0, 50, 100, 500, 1000)
+frecuencia <- c(400, 300, 250, 40, 10)
+N          <- sum(frecuencia) # N = 1000
+costo      <- 100
+
+# 3. CÁLCULO DE GANANCIA Y PROBABILIDAD (Fórmulas de tu imagen)
+g   <- premios - costo        # G = Premio - Costo
+p_g <- frecuencia / N         # p(gi) = fi / N
+
+# 4. MEDIDAS ESTADÍSTICAS
+esperanza  <- sum(g * p_g)
+varianza   <- sum((g - esperanza)^2 * p_g)
+desviacion <- sqrt(varianza)
+cv_pct     <- (desviacion / abs(esperanza)) * 100
+
+# 5. RESULTADOS
+cat("Esperanza E[G]:", esperanza, "\n",
+    "Varianza Var(G):", varianza, "\n",
+    "Desviación sigma:", round(desviacion, 4), "\n",
+    "CV:", round(cv_pct, 2), "%")
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 7.png")
+```
+
+En el ejercicio 7, se presenta una **Función de Densidad** gráfica (un triángulo). En variables continuas, la probabilidad es el **área bajo la curva**.
+
+**Fórmulas y Lógica Aplicada:** 1. **Área de un triángulo:** $Area = \frac{\text{base} \times \text{altura}}{2}$. Como el área total debe ser 1 y la base es 50, la altura máxima es $0.04$. 2. **Probabilidad** $P(X < k)$: Es el área acumulada desde el inicio hasta el punto $k$. 3. **Probabilidad** $P(a < X < b)$: Es el área del trapecio o región comprendida entre los límites $a$ y $b$. \* Nota: $P(X < 25)$ es exactamente $0.5$ por la simetría del gráfico.
+
+## Definimos la función f(x) triangular (base 0-50, pico en 25 con h=0.04)
+
+```{r}
+f7 <- function(x) {
+  ifelse(x >= 0 & x <= 25, (0.04/25)*x, 
+         ifelse(x > 25 & x <= 50, 0.04 - (0.04/25)*(x-25), 0))
+}
+```
+
+## (a) Probabilidad de vida \< 30 horas: Integral de 0 a 30
+
+```{r}
+p_7a <- integrate(f7, 0, 30)$value
+```
+
+## (b) Probabilidad entre 10 y 25 horas: Integral de 10 a 25
+
+```{r}
+f11 <- function(x) {
+  x^2 + 3*x + 1
+}
+p_7b <- integrate(f11, 10, 25)$value 
+p_7b <- integrate(f7, 10, 25)$value
+```
+
+## Gráfica de Densidad
+
+```{r}
+ggplot(data.frame(x = c(0, 50)), aes(x)) +
+  stat_function(fun = f7, geom = "area", fill = "skyblue", alpha = 0.5) +
+  geom_area(stat = "function", fun = f7, xlim = c(0, 30), fill = "blue", alpha = 0.3) +
+  labs(title = "Distribución de Vida de Bacterias",
+       subtitle = "El área sombreada oscura es P[X < 30]",
+       x = "Horas (x)", y = "f(x)") +
+  theme_minimal()
+```
+
+## RESULTADOS
+
+```{r}
+cat("--- ESTADÍSTICOS: VARIABLE CONTINUA (TRIANGULAR) ---", "\n",
+    "Esperanza (Media):", round(esperanza, 4), "\n",
+    "Varianza:", round(varianza, 4), "\n",
+    "Desviación Estándar:", round(desviacion, 4), "\n",
+    "Coeficiente de Variación:", round(cv_pct, 2), "%", "\n")
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 8.png")
+```
+
+En este ejercicio, la función de densidad $f(x)$ tiene un valor constante de $1/3$ en dos intervalos separados.
+
+**Fórmulas Aplicadas:** 1. **Condición de Densidad:** Para que sea válida, $\int_{-\infty}^{\infty} f(x) \, dx = 1$. $$\int_{0}^{1} \frac{1}{3} \, dx + \int_{2}^{4} \frac{1}{3} \, dx = \left[ \frac{x}{3} \right]_0^1 + \left[ \frac{x}{3} \right]_2^4 = \frac{1}{3} + \frac{2}{3} = 1$$ 2. **Probabilidad en un intervalo:** $P(a < X < b) = \int_{a}^{b} f(x) \, dx$. \* Si el intervalo pedido cae en una zona donde $f(x)=0$, esa parte de la integral vale cero.
+
+## INTEGRACIÓN POR TRAMOS
+
+```{r}
+
+f8_grafica <- function(x) {
+  dplyr::case_when(
+    (x >= 0 & x <= 1) ~ 1/3,
+    (x > 2 & x <= 4)  ~ 1/3,
+    TRUE ~ 0
+  )
+}
+
+puntos_x <- seq(-1, 5, length.out = 1000)
+datos_f8 <- data.frame(x = puntos_x, y = f8_grafica(puntos_x))
+
+ggplot(datos_f8, aes(x = x, y = y)) +
+  geom_line(color = "darkblue", size = 1) +
+  geom_area(fill = "skyblue", alpha = 0.4) + # Sombrear el área de probabilidad
+  scale_x_continuous(breaks = 0:4) +
+  labs(
+    title = "Ejercicio 8: Función de Densidad por Tramos",
+    subtitle = "Dos pulsos de probabilidad con un hueco entre x=1 y x=2",
+    x = "Variable X",
+    y = "f(x)"
+  ) +
+  theme_minimal()
+```
+
+## RESULTADOS
+
+```{r}
+cat("--- ESTADÍSTICOS: VARIABLE CONTINUA POR TRAMOS ---", "\n",
+    "Esperanza (E[X]):", round(esperanza, 4), "\n",
+    "Varianza (Var(X)):", round(varianza, 4), "\n",
+    "Desviación Estándar:", round(desviacion, 4), "\n",
+    "Coeficiente de Variación:", round(cv_pct, 2), "%", "\n")
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 9.png")
+```
+
+## Esperanza y Percentiles
+
+Este ejercicio presenta una función de densidad triangular (aunque el enunciado original tiene una errata en los límites, se normaliza para que el área sea 1).
+
+**Fórmulas Aplicadas:** 1. **Esperanza Matemática (**$E[X]$): $$E[X] = \int_{0}^{1} x \cdot (x) \, dx + \int_{1}^{2} x \cdot (2-x) \, dx$$ 2. **Percentiles (**$P_k$): Es el valor $a$ tal que $P(X \leq a) = k/100$. \* Se resuelve mediante la ecuación: $\int_{0}^{a} f(x) \, dx = \text{Probabilidad deseada}$.
+
+```{r}
+f9 <- function(x) { ifelse(x < 1, x, 2 - x) } # Función normalizada
+esp_9 <- integrate(function(x) x * f9(x), 0, 2)$value
+
+
+```
+
+## Hallar Percentiles 30 y 70
+
+```{r}
+F9_inv <- function(p) {
+  uniroot(function(q) integrate(f9, 0, q)$value - p, lower=0, upper=2)$root
+}
+p30 <- F9_inv(0.30); p70 <- F9_inv(0.70)
+```
+
+## Grafica
+
+```{r}
+library(ggplot2)
+
+# 1. Definimos los puntos del triángulo (Soporte y Altura)
+# El pico está en x=1 con altura f(x)=1
+datos_grafica <- data.frame(
+  x = c(0, 1, 2), 
+  y = c(0, 1, 0)
+)
+
+# 2. Creamos la gráfica
+ggplot(datos_grafica, aes(x = x, y = y)) +
+  geom_polygon(fill = "#5DADE2", color = "#2E86C1", alpha = 0.7, size = 1.2) +
+  geom_line(size = 1) +
+  scale_x_continuous(breaks = seq(0, 2, 0.5)) +
+  scale_y_continuous(limits = c(0, 1.1)) +
+  labs(title = "Función de Densidad f(x): Distribución Triangular",
+       subtitle = "Soporte entre 0 y 2",
+       x = "Variable Aleatoria X",
+       y = "Densidad f(x)") +
+  theme_minimal()
+```
+
+## RESULTADOS
+
+```{r}
+cat("--- RESULTADOS FINALES EJERCICIO 9 ---", "\n",
+    "Esperanza (Media):", round(esperanza, 2), "\n",
+    "Varianza:", round(varianza, 4), "\n",
+    "Desviación Estándar:", round(desviacion, 4), "\n",
+    "Coeficiente de Variación:", round(cv_pct, 2), "%")
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 10.png")
+```
+
+## Distribución Uniforme (Contenido de Café)
+
+La distribución uniforme $U(a, b)$ es aquella donde la probabilidad es constante en todo el rango.
+
+**Fórmulas Aplicadas:** 1. **Función de Densidad:** $f(x) = \frac{1}{b-a}$ para $a \le x \le b$. \* Aquí: $f(x) = \frac{1}{232.5 - 227.5} = \frac{1}{5} = 0.2$. 2. **Probabilidad Acumulada:** $P(X \leq x_0) = \frac{x_0 - a}{b - a}$. 3. **Esperanza y Varianza:** \* $E[X] = \frac{a+b}{2}$ \* $Var(X) = \frac{(b-a)^2}{12}$
+
+## CAFÉ (UNIFORME)
+
+```{r}
+a <- 227.5; b <- 232.5
+p_10b <- (228.65 - a) / (b - a)
+p_10c <- (231.66 - 229.34) / (b - a)
+esp_10 <- (a + b) / 2
+sd_10  <- sqrt((b - a)^2 / 12)
+```
+
+## --- TABLA FINAL ---
+
+```{r}
+res_10 <- data.frame(
+  Inciso = c("P[X \u2264 228.65]", "P[229.34 \u2264 X \u2264 231.66]", "E[X] Café", "SD[X] Café"),
+  Formula = c("(x-a)/(b-a)", "(d-c)/(b-a)", "(a+b)/2", "\u221a((b-a)\u00b2/12)"),
+  Resultado = round(c(p_10b, p_10c, esp_10, sd_10), 4)
+)
+
+res_10 %>% kable(caption = "Resultados Ejercicio 10: Distribución Uniforme") %>% kable_classic(full_width = F)
+```
+
+## GRAFICA
+
+```{r}
+library(ggplot2)
+
+densidad <- 1 / (b - a)
+
+ggplot() +
+  geom_rect(aes(xmin=a, xmax=b, ymin=0, ymax=densidad), 
+            fill="steelblue", alpha=0.5, color="black") +
+  scale_x_continuous(limits = c(225, 235)) +
+  scale_y_continuous(limits = c(0, 0.3)) +
+  labs(title = "Distribución Uniforme del Contenido de Café",
+       x = "Contenido (gr)", y = "Densidad f(x)") +
+  theme_minimal()
+```
+
+## RESULTADOS:
+
+```{r}
+
+rm(list = ls()) 
+
+# Parámetros de la distribución
+a <- 227.5
+b <- 232.5
+
+# Cálculos
+esperanza <- (a + b) / 2
+varianza  <- (b - a)^2 / 12
+desv_std  <- sqrt(varianza)
+
+# Probabilidades solicitadas
+# P(X <= 228.65)
+p1 <- (228.65 - a) / (b - a)
+
+# P(229.34 <= X <= 231.66)
+p2 <- (231.66 - 229.34) / (b - a)
+
+cat("Esperanza:", esperanza, "\n")
+cat("Desviación Estándar:", round(desv_std, 4), "\n")
+cat("P[X <= 228.65]:", p1, "\n")
+cat("P[229.34 <= X <= 231.66]:", p2, "\n")
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 11.png")
+```
+
+## Longitud de Piezas (Cálculo de la constante $k$)
+
+Para que una función sea de densidad, el área bajo la curva en su soporte debe ser 1. Aquí, $f(x) = k(x-1)(3-x)$ en el intervalo $[1, 3]$.
+
+**Fórmulas Aplicadas:** 1. **Condición de Normalización:** $\int_{1}^{3} k(x-1)(3-x) \, dx = 1$ \* Resolviendo la integral: $k \cdot \int_{1}^{3} (-x^2 + 4x - 3) \, dx = k \cdot [-\frac{x^3}{3} + 2x^2 - 3x]_1^3 = k \cdot \frac{4}{3}$. \* Por lo tanto, $\mathbf{k = 3/4 = 0.75}$. 2. **Probabilidad de Pieza Válida:** $P(1.7 \leq X \leq 2.4) = \int_{1.7}^{2.4} 0.75(x-1)(3-x) \, dx$.
+
+## PIEZAS DE FÁBRICA
+
+```{r}
+f11 <- function(x) { 0.75 * (x - 1) * (3 - x) }
+prob_valida <- integrate(f11, 1.7, 2.4)$value
+
+```
+
+## GRAFICA
+
+```{r}
+
+# Definimos la función con k = 0.75 (3/4) según la normalización
+f_densidad <- function(x) {
+  ifelse(x >= 1 & x <= 3, 0.75 * (x - 1) * (3 - x), 0)
+}
+
+# Generamos la curva
+ggplot(data.frame(x = c(0, 4)), aes(x = x)) +
+  stat_function(fun = f_densidad, geom = "area", 
+                fill = "darkseagreen3", alpha = 0.6, color = "darkgreen") +
+  scale_x_continuous(breaks = seq(0, 4, 0.5)) +
+  labs(title = "Distribución de Longitud de Piezas",
+       subtitle = "Función cuadrática k(x-1)(3-x)",
+       x = "Longitud (cm)", y = "f(x)") +
+  theme_minimal()
+```
+
+## RESULTADOS
+
+```{r}
+rm(list = ls()) 
+
+# 2. DEFINICIÓN DE LA FUNCIÓN (con k = 0.75)
+k <- 0.75
+f_x <- function(x) { k * (x - 1) * (3 - x) }
+
+# 3. CÁLCULO DE PROBABILIDAD (Piezas válidas: 1.7 a 2.4)
+prob_valida <- integrate(f_x, lower = 1.7, upper = 2.4)$value
+
+# 4. MEDIDAS DE RESUMEN
+# Esperanza: integral de x * f(x)
+esperanza <- integrate(function(x) x * f_x(x), lower = 1, upper = 3)$value
+
+# Varianza: integral de (x - mu)^2 * f(x)
+varianza <- integrate(function(x) (x - esperanza)^2 * f_x(x), lower = 1, upper = 3)$value
+
+# Desviación y CV
+desv_std <- sqrt(varianza)
+cv_pct <- (desv_std / esperanza) * 100
+
+# 5. RESULTADOS
+cat("--- RESULTADOS EJERCICIO 11 ---", "\n",
+    "Probabilidad de pieza válida P(1.7 < X < 2.4):", round(prob_valida, 4), "\n",
+    "Esperanza E[X]:", round(esperanza, 2), "\n",
+    "Desviación Estándar:", round(desv_std, 4), "\n",
+    "Coeficiente de Variación:", round(cv_pct, 2), "%")
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 12.png")
+```
+
+## Retraso de Vuelos (Parábola Simétrica)
+
+La variable $X$ representa el tiempo de adelanto (negativo) o retraso (positivo) en minutos. La función es $f(x) = \frac{36-x^2}{288}$ para $-6 < x < 6$.
+
+**Fórmulas Aplicadas:** 1. **Probabilidad de Adelanto/Retraso:** $P(a < X < b) = \int_{a}^{b} \frac{36-x^2}{288} \, dx$. 2. **Propiedad de Continuidad:** $P(X = k) = 0$. En variables continuas, la probabilidad de un instante exacto es nula.
+
+## VUELOS PHOENIX-TUCSON
+
+```{r}
+f12 <- function(x) { (36 - x^2) / 288 }
+
+p_12a <- integrate(f12, -6, -2)$value # Al menos 2 min adelanto (X <= -2)
+p_12b <- integrate(f12, 1, 6)$value   # Al menos 1 min retraso (X >= 1)
+p_12c <- integrate(f12, -3, -1)$value # Entre 1 y 3 min adelanto
+p_12d <- 0                            # P[X=5] siempre es 0 en continuas
+
+
+```
+
+## GRAFICA
+
+```{r}
+f_retraso <- function(x) {
+  ifelse(x >= -6 & x <= 6, (36 - x^2) / 288, 0)
+}
+
+# Generamos la gráfica
+ggplot(data.frame(x = c(-7, 7)), aes(x = x)) +
+  stat_function(fun = f_retraso, geom = "area", 
+                fill = "orchid3", alpha = 0.5, color = "purple") +
+  scale_x_continuous(breaks = seq(-6, 6, 2)) +
+  labs(title = "Distribución de Adelantos/Retrasos de Vuelos",
+       subtitle = "f(x) = (36 - x^2) / 288",
+       x = "Minutos (Negativo = Adelanto, Positivo = Retraso)", 
+       y = "Densidad f(x)") +
+  theme_minimal()
+```
+
+## RESULTADOS
+
+```{r}
+f_x <- function(x) { (36 - x^2) / 288 }
+
+# 3. CÁLCULO DE INCISOS (Probabilidades)
+# (a) Al menos 2 min adelantado: P(X <= -2)
+p_a <- integrate(f_x, lower = -6, upper = -2)$value
+
+# (b) Al menos 1 min retrasado: P(X >= 1)
+p_b <- integrate(f_x, lower = 1, upper = 6)$value
+
+# (c) Entre 1 y 3 min adelantado: P(-3 <= X <= -1)
+p_c <- integrate(f_x, lower = -3, upper = -1)$value
+
+# (d) Exactamente 5 min retrasado: P(X = 5) -> En continuas es 0
+p_d <- 0 
+
+# 4. MEDIDAS DE RESUMEN
+esperanza <- integrate(function(x) x * f_x(x), lower = -6, upper = 6)$value
+varianza  <- integrate(function(x) (x - esperanza)^2 * f_x(x), lower = -6, upper = 6)$value
+desviacion <- sqrt(varianza)
+cv_pct     <- (desviacion / abs(esperanza)) * 100 # Nota: Si E[X] es 0, el CV será infinito
+
+# 5. RESULTADOS
+cat("--- RESULTADOS EJERCICIO 12 ---", "\n",
+    "P(Al menos 2 min adelantado):", round(p_a, 4), "\n",
+    "P(Al menos 1 min retrasado):", round(p_b, 4), "\n",
+    "P(Entre 1 y 3 min adelantado):", round(p_c, 4), "\n",
+    "P(Exactamente 5 min):", p_d, "\n",
+    "Esperanza E[X]:", round(esperanza, 4), "\n",
+    "Varianza Var(X):", round(varianza, 4), "\n",
+    "Desviación Estándar:", round(desviacion, 4))
+```
+
+# Ejercicio
+
+```{r}
+knitr::include_graphics("H:/TALLER/R Estadistica 2/ej 13.png")
+```
+
+## Proporción de Aditivo en Gasolina
+
+Este ejercicio es interesante porque clasifica el producto final según el valor de la variable continua $X$.
+
+**Fórmulas Aplicadas:** 1. **Función de Distribución** $F(x)$: $$F(x) = \int_{0}^{x} 6t(1-t) \, dt = [3t^2 - 2t^3]_0^x = 3x^2 - 2x^3$$ 2. **Precio Medio (Esperanza de una función de X):** $$E[Precio] = \sum (Precio_i \cdot P(\text{Tipo}_i))$$ Donde $P(\text{Tipo}_i)$ se obtiene integrando $f(x)$ en los rangos $(0, 0.5)$, $(0.5, 0.8)$ y $(0.8, 1)$.
+
+## GASOLINA Y ADITIVOS
+
+```{r}
+f13 <- function(x) { 6 * x * (1 - x) }
+```
+
+## Probabilidades por tipo
+
+```{r}
+p_t1 <- integrate(f13, 0, 0.5)$value
+p_t2 <- integrate(f13, 0.5, 0.8)$value
+p_t3 <- integrate(f13, 0.8, 1)$value
+```
+
+## Precio medio: (Prob \* Precio)
+
+```{r}
+precio_medio <- (p_t1 * 0.80) + (p_t2 * 0.90) + (p_t3 * 1.00)
+```
+
+## --- TABLA DE RESULTADOS BLOQUE ---
+
+```{r}
+res_bloque <- data.frame(
+  Ejercicio = c("11. Piezas Válidas", "12a. Adelanto > 2min", "12b. Retraso > 1min", "13. Precio Medio Gasolina"),
+  Formula_Integral = c("\u222b(1.7 a 2.4) f(x)dx", "\u222b(-6 a -2) f(x)dx", "\u222b(1 a 6) f(x)dx", "\u2211 (P_i \u00b7 Precio_i)"),
+  Resultado = c(paste0(round(prob_valida*100, 2), "%"), round(p_12a, 4), round(p_12b, 4), round(precio_medio, 3))
+)
+
+res_bloque %>% kable(caption = "Análisis de Producción, Logística y Costos") %>% kable_classic(full_width = F)
+```
+
+## GRAFICA
+
+```{r}
+f_gasolina <- function(x) { 6 * x * (1 - x) }
+
+# Generar gráfica
+ggplot(data.frame(x = c(0, 1)), aes(x = x)) +
+  stat_function(fun = f_gasolina, geom = "area", 
+                fill = "orange", alpha = 0.5, color = "darkred") +
+  labs(title = "Densidad: Calidad de Gasolina",
+       subtitle = "f(x) = 6x(1-x)",
+       x = "Variable X", y = "Densidad f(x)") +
+  theme_minimal()
+```
